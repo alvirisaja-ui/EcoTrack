@@ -97,19 +97,27 @@ $("rows").addEventListener("click", e => {
 });
 $("save").addEventListener("click", async () => {
   if (!current) return;
-  const status = $("st").value, note = $("nt").value.trim(), id = current.id;
+
+  const status = $("st").value;
+  const note = $("nt").value.trim();
+  const id = current.id;
+
   try {
-await update(ref(db, `reports/${id}`), {
-  status: status,
-  adminNote: note
-});
+    await update(ref(db, `reports/${id}`), {
+      status: status,
+      adminNote: note
+    });
 
-await update(ref(db, `publicStatus/${id}`), {
-  status: status,
-  note: note
-});
+    await update(ref(db, `publicStatus/${id}`), {
+      status: status,
+      note: note
+    });
 
-toast("Perubahan disimpan.");
+    toast("Perubahan disimpan.");
+  } catch (err) {
+    console.error(err);
+    toast("Gagal menyimpan perubahan.", true);
+  }
 });
 </script>
 </body>
