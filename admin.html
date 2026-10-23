@@ -99,12 +99,17 @@ $("save").addEventListener("click", async () => {
   if (!current) return;
   const status = $("st").value, note = $("nt").value.trim(), id = current.id;
   try {
-    await update(ref(db), {
-      [`reports/${id}/status`]: status, [`reports/${id}/adminNote`]: note,
-      [`publicStatus/${id}/status`]: status, [`publicStatus/${id}/note`]: note
-    });
-    toast("Perubahan disimpan.");
-  } catch (err) { console.error(err); toast("Gagal menyimpan. Pastikan Anda login sebagai admin.", true); }
+await update(ref(db, `reports/${id}`), {
+  status: status,
+  adminNote: note
+});
+
+await update(ref(db, `publicStatus/${id}`), {
+  status: status,
+  note: note
+});
+
+toast("Perubahan disimpan.");
 });
 </script>
 </body>
