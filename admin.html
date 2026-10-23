@@ -1,124 +1,1028 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EcoTrack Admin</title>
-<meta name="robots" content="noindex">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoTrack Admin</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#176b45">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    :root {
+      --admin-green: #176b45;
+      --admin-dark: #104d33;
+      --admin-light: #e9f7ef;
+      --admin-border: #e1e9e4;
+      --admin-text: #20352a;
+      --admin-muted: #718078;
+    }
+
+    body {
+      background: #f5f8f6;
+      color: var(--admin-text);
+    }
+
+    .admin-header {
+      background: rgba(255,255,255,.96);
+      border-bottom: 1px solid var(--admin-border);
+      backdrop-filter: blur(12px);
+    }
+
+    .admin-header .wrap {
+      min-height: 68px;
+      height: auto;
+      gap: 12px;
+    }
+
+    .admin-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--admin-green);
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 1.15rem;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      background: var(--admin-light);
+      font-size: 1.35rem;
+    }
+
+    .admin-main {
+      padding: 28px 0 56px;
+    }
+
+    .admin-heading {
+      margin-bottom: 24px;
+    }
+
+    .admin-heading h1 {
+      margin: 0 0 7px;
+      font-size: clamp(1.7rem, 4vw, 2.35rem);
+      letter-spacing: -.04em;
+      color: var(--admin-dark);
+    }
+
+    .admin-heading p {
+      margin: 0;
+      color: var(--admin-muted);
+    }
+
+    .admin-card {
+      background: #fff;
+      border: 1px solid var(--admin-border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 5px 22px rgba(27, 64, 43, .035);
+      min-width: 0;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid var(--admin-border);
+      border-radius: 16px;
+      padding: 18px;
+      min-width: 0;
+    }
+
+    .stat-label {
+      color: var(--admin-muted);
+      font-size: .84rem;
+      font-weight: 600;
+      line-height: 1.4;
+    }
+
+    .stat-number {
+      display: block;
+      margin-top: 10px;
+      font-size: 2rem;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--admin-dark);
+      overflow-wrap: anywhere;
+    }
+
+    .stat-card.total {
+      background: var(--admin-green);
+      border-color: var(--admin-green);
+    }
+
+    .stat-card.total .stat-label,
+    .stat-card.total .stat-number {
+      color: #fff;
+    }
+
+    .section-title {
+      margin: 0 0 5px;
+      color: var(--admin-dark);
+      font-size: 1.15rem;
+    }
+
+    .section-subtitle {
+      margin: 0 0 18px;
+      color: var(--admin-muted);
+      font-size: .9rem;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: minmax(180px, 1.5fr) repeat(2, minmax(150px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .filters input,
+    .filters select,
+    .detail-form select,
+    .detail-form textarea,
+    #em,
+    #pw {
+      min-width: 0;
+      width: 100%;
+      padding: 12px 13px;
+      border: 1px solid #d5e1d9;
+      border-radius: 11px;
+      background: #fff;
+      color: var(--admin-text);
+      font: inherit;
+    }
+
+    .filters input:focus,
+    .filters select:focus,
+    .detail-form select:focus,
+    .detail-form textarea:focus,
+    #em:focus,
+    #pw:focus {
+      outline: 3px solid #d8f0e1;
+      border-color: var(--admin-green);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+      border: 1px solid var(--admin-border);
+      border-radius: 12px;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+      min-width: 690px;
+    }
+
+    .admin-table th {
+      background: #f7faf8;
+      color: #66776d;
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .045em;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .admin-table th,
+    .admin-table td {
+      padding: 14px 13px;
+      border-bottom: 1px solid #edf1ee;
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    .admin-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .admin-table tbody tr.item {
+      cursor: pointer;
+      transition: background .15s;
+    }
+
+    .admin-table tbody tr.item:hover {
+      background: #f2faf5;
+    }
+
+    .report-id {
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .82rem;
+      overflow-wrap: anywhere;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 99px;
+      font-size: .76rem;
+      font-weight: 750;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+
+    .status-menunggu {
+      background: #fff2d4;
+      color: #805500;
+    }
+
+    .status-diverifikasi {
+      background: #e8efff;
+      color: #3158a7;
+    }
+
+    .status-ditangani {
+      background: #e8e4ff;
+      color: #5940a1;
+    }
+
+    .status-selesai {
+      background: #dcf7e6;
+      color: #176b45;
+    }
+
+    .status-ditolak {
+      background: #ffe6e6;
+      color: #a32929;
+    }
+
+    .status-lainnya {
+      background: #edf1ee;
+      color: #506057;
+    }
+
+    .detail-card {
+      margin-top: 22px;
+      scroll-margin-top: 85px;
+    }
+
+    .detail-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .detail-top h2 {
+      margin: 0 0 5px;
+      color: var(--admin-dark);
+    }
+
+    .detail-top p {
+      margin: 0;
+      color: var(--admin-muted);
+      font-size: .9rem;
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin: 0 0 24px;
+    }
+
+    .detail-item {
+      background: #f7faf8;
+      border: 1px solid #edf1ee;
+      padding: 14px;
+      border-radius: 12px;
+      min-width: 0;
+    }
+
+    .detail-item.full {
+      grid-column: 1 / -1;
+    }
+
+    .detail-item dt {
+      color: var(--admin-muted);
+      font-size: .8rem;
+      font-weight: 650;
+      margin-bottom: 6px;
+    }
+
+    .detail-item dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .detail-form label {
+      display: block;
+      margin: 16px 0 7px;
+      font-size: .9rem;
+      font-weight: 700;
+    }
+
+    .detail-form textarea {
+      resize: vertical;
+      min-height: 105px;
+    }
+
+    .button-row {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .admin-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 11px;
+      padding: 12px 17px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform .15s, background .15s;
+    }
+
+    .admin-btn:active {
+      transform: scale(.98);
+    }
+
+    .admin-btn.primary {
+      background: var(--admin-green);
+      color: #fff;
+    }
+
+    .admin-btn.primary:hover {
+      background: var(--admin-dark);
+    }
+
+    .admin-btn.secondary {
+      background: #edf4ef;
+      color: var(--admin-dark);
+    }
+
+    .admin-btn:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .empty-state {
+      padding: 30px 15px;
+      text-align: center;
+      color: var(--admin-muted);
+    }
+
+    .empty-icon {
+      display: block;
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    .login-wrap {
+      max-width: 440px;
+      margin: 30px auto;
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2.5rem;
+    }
+
+    .login-card h1 {
+      margin: 0 0 6px;
+      color: var(--admin-dark);
+      font-size: 1.55rem;
+    }
+
+    .login-card > p {
+      margin: 0 0 20px;
+      color: var(--admin-muted);
+    }
+
+    .login-card label {
+      display: block;
+      margin: 14px 0 7px;
+      font-weight: 650;
+      font-size: .9rem;
+    }
+
+    .login-card .admin-btn {
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .security-note {
+      margin-top: 15px;
+      color: var(--admin-muted);
+      font-size: .8rem;
+      text-align: center;
+    }
+
+    .toast {
+      z-index: 100;
+      max-width: calc(100% - 28px);
+      width: max-content;
+      text-align: center;
+    }
+
+    .toast.err {
+      background: #a32929;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1000px) {
+      .stats-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 650px) {
+      .admin-main {
+        padding-top: 20px;
+      }
+
+      .admin-header .wrap {
+        min-height: 62px;
+      }
+
+      .admin-brand {
+        font-size: 1rem;
+      }
+
+      .brand-icon {
+        width: 37px;
+        height: 37px;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .stat-card {
+        padding: 15px;
+      }
+
+      .stat-number {
+        font-size: 1.7rem;
+      }
+
+      .filters {
+        grid-template-columns: 1fr;
+      }
+
+      .admin-card {
+        padding: 16px;
+        border-radius: 15px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .detail-item.full {
+        grid-column: auto;
+      }
+
+      .detail-top {
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition: none !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header><div class="wrap">
-  <a class="logo" href="index.html">🌿 EcoTrack Admin</a>
-  <button class="btn alt hidden" id="out">Keluar</button>
-</div></header>
+<header class="admin-header">
+  <div class="wrap">
+    <a class="admin-brand" href="index.html">
+      <span class="brand-icon">🌿</span>
+      <span>EcoTrack <span style="font-weight:500">Admin</span></span>
+    </a>
+    <button class="admin-btn secondary hidden" id="out" type="button">Keluar</button>
+  </div>
+</header>
 
-<section id="login"><div class="wrap" style="max-width:420px"><div class="card">
-  <h2>Masuk admin</h2>
-  <form id="lf">
-    <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
-    <label for="pw">Kata sandi</label><input id="pw" type="password" autocomplete="current-password" required>
-    <p style="margin-top:16px"><button class="btn" type="submit">Masuk</button></p>
-  </form>
-</div></div></section>
+<main class="admin-main">
+  <section id="login">
+    <div class="wrap login-wrap">
+      <div class="admin-card login-card">
+        <div class="login-logo">🌱</div>
+        <h1>Selamat datang kembali</h1>
+        <p>Masuk menggunakan akun administrator EcoTrack.</p>
 
-<section id="panel" class="hidden"><div class="wrap">
-  <div class="card">
-    <div class="row">
-      <input id="q" placeholder="Cari ID atau lokasi" aria-label="Cari">
-      <select id="fc" aria-label="Filter kategori"></select>
-      <select id="fs" aria-label="Filter status"></select>
+        <form id="lf">
+          <label for="em">Email admin</label>
+          <input id="em" type="email" autocomplete="username"
+                 placeholder="admin@email.com" required>
+
+          <label for="pw">Kata sandi</label>
+          <input id="pw" type="password" autocomplete="current-password"
+                 placeholder="Masukkan kata sandi" required>
+
+          <button class="admin-btn primary" id="loginBtn" type="submit">
+            Masuk ke dashboard
+          </button>
+        </form>
+
+        <div class="security-note">
+          Akses hanya untuk akun administrator yang telah diotorisasi.
+        </div>
+      </div>
     </div>
-    <div class="scroll" style="margin-top:14px"><table>
-      <thead><tr><th>Waktu</th><th>ID</th><th>Kategori</th><th>Lokasi</th><th>Status</th></tr></thead>
-      <tbody id="rows"></tbody>
-    </table></div>
-    <p id="empty" class="hint hidden">Belum ada laporan yang cocok.</p>
-  </div>
-  <div class="card hidden" id="det" style="margin-top:18px">
-    <h2>Detail laporan</h2>
-    <dl class="detail" id="dl"></dl>
-    <label for="st">Status</label><select id="st"></select>
-    <label for="nt">Catatan tindak lanjut</label><textarea id="nt" rows="3" maxlength="500"></textarea>
-    <p><button class="btn" id="save">Simpan perubahan</button></p>
-  </div>
-</div></section>
-<div id="toast" class="toast" role="status"></div>
+  </section>
+
+  <section id="panel" class="hidden">
+    <div class="wrap">
+      <div class="admin-heading">
+        <h1>Dashboard EcoTrack</h1>
+        <p>Pantau laporan lingkungan dan perbarui tindak lanjutnya.</p>
+      </div>
+
+      <div class="stats-grid" aria-label="Statistik laporan">
+        <div class="stat-card total">
+          <span class="stat-label">Total laporan</span>
+          <strong class="stat-number" id="countTotal">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Menunggu verifikasi</span>
+          <strong class="stat-number" id="countMenunggu">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Diverifikasi</span>
+          <strong class="stat-number" id="countDiverifikasi">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Sedang ditangani</span>
+          <strong class="stat-number" id="countDitangani">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Selesai</span>
+          <strong class="stat-number" id="countSelesai">0</strong>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Ditolak</span>
+          <strong class="stat-number" id="countDitolak">0</strong>
+        </div>
+      </div>
+
+      <div class="admin-card">
+        <h2 class="section-title">Daftar laporan</h2>
+        <p class="section-subtitle">Pilih laporan untuk melihat detail atau mengubah statusnya.</p>
+
+        <div class="filters">
+          <input id="q" type="search"
+                 placeholder="Cari ID, lokasi, kategori, deskripsi..."
+                 aria-label="Cari laporan">
+
+          <select id="fc" aria-label="Filter kategori">
+            <option value="">Semua kategori</option>
+          </select>
+
+          <select id="fs" aria-label="Filter status">
+            <option value="">Semua status</option>
+          </select>
+        </div>
+
+        <div class="table-scroll">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Waktu</th>
+                <th>ID laporan</th>
+                <th>Kategori</th>
+                <th>Lokasi</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="rows"></tbody>
+          </table>
+          <div id="empty" class="empty-state hidden">
+            <span class="empty-icon">🍃</span>
+            <strong id="emptyTitle">Belum ada laporan</strong>
+            <div id="emptyText">Laporan yang cocok akan muncul di sini.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card detail-card hidden" id="det">
+        <div class="detail-top">
+          <div>
+            <h2>Detail laporan</h2>
+            <p>Periksa informasi dan simpan pembaruan tindak lanjut.</p>
+          </div>
+          <button class="admin-btn secondary" id="closeDetail" type="button">
+            Tutup detail
+          </button>
+        </div>
+
+        <dl class="detail-grid" id="dl"></dl>
+
+        <div class="detail-form">
+          <label for="st">Status laporan</label>
+          <select id="st" required></select>
+
+          <label for="nt">Catatan tindak lanjut</label>
+          <textarea id="nt" rows="4" maxlength="500"
+                    placeholder="Tuliskan perkembangan atau alasan penolakan..."></textarea>
+          <div class="security-note" style="text-align:left">
+            Maksimal 500 karakter. Hindari memasukkan informasi pribadi yang tidak diperlukan.
+          </div>
+
+          <div class="button-row">
+            <button class="admin-btn primary" id="save" type="button">
+              Simpan perubahan
+            </button>
+            <button class="admin-btn secondary" id="cancel" type="button">
+              Batalkan perubahan
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script type="module">
-import { auth, db, CATEGORIES, STATUSES } from "./firebase.js";
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import { ref, onValue, update } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+  import { auth, db, CATEGORIES, STATUSES } from "./firebase.js";
+  import {
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+  import {
+    ref,
+    onValue,
+    update
+  } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
 
-const $ = id => document.getElementById(id);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function toast(msg, err) { const t = $("toast"); t.textContent = msg; t.className = "toast show" + (err ? " err" : ""); setTimeout(() => t.className = "toast", 3500); }
-const opts = (list, first) => (first ? `<option value="">${first}</option>` : "") + list.map(x => `<option>${esc(x)}</option>`).join("");
-$("fc").innerHTML = opts(CATEGORIES, "Semua kategori");
-$("fs").innerHTML = opts(STATUSES, "Semua status");
-$("st").innerHTML = opts(STATUSES);
+  const $ = id => document.getElementById(id);
 
-let reports = [], current = null, unsub = null;
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
 
-$("lf").addEventListener("submit", async e => {
-  e.preventDefault();
-  try { await signInWithEmailAndPassword(auth, $("em").value, $("pw").value); }
-  catch { toast("Email atau kata sandi salah.", true); }
-});
-$("out").addEventListener("click", () => signOut(auth));
+  const statusClass = status => ({
+    "Menunggu Verifikasi": "menunggu",
+    "Diverifikasi": "diverifikasi",
+    "Sedang Ditangani": "ditangani",
+    "Selesai": "selesai",
+    "Ditolak": "ditolak"
+  })[status] || "lainnya";
 
-onAuthStateChanged(auth, async user => {
-  if (unsub) { unsub(); unsub = null; }
-  const ok = user && !user.isAnonymous && (await user.getIdTokenResult(true)).claims.admin === true;
-  if (user && !user.isAnonymous && !ok) { toast("Akun ini bukan admin.", true); await signOut(auth); return; }
-  $("login").classList.toggle("hidden", !!ok);
-  $("panel").classList.toggle("hidden", !ok);
-  $("out").classList.toggle("hidden", !ok);
-  if (ok) unsub = onValue(ref(db, "reports"), s => {
-    reports = []; s.forEach(c => { reports.push({ id: c.key, ...c.val() }); });
-    reports.sort((a, b) => b.createdAt - a.createdAt); render();
-  }, err => { console.error(err); toast("Gagal memuat laporan.", true); });
-});
+  function toast(message, isError = false) {
+    const element = $("toast");
+    element.textContent = message;
+    element.className = "toast show" + (isError ? " err" : "");
 
-function render() {
-  const q = $("q").value.toLowerCase(), fc = $("fc").value, fs = $("fs").value;
-  const list = reports.filter(r => (!fc || r.category === fc) && (!fs || r.status === fs) &&
-    (!q || r.id.toLowerCase().includes(q) || (r.location || "").toLowerCase().includes(q)));
-  $("rows").innerHTML = list.map(r => `<tr class="item" data-id="${esc(r.id)}"><td>${new Date(r.createdAt).toLocaleString("id-ID")}</td><td>${esc(r.id)}</td><td>${esc(r.category)}</td><td>${esc(r.location)}</td><td><span class="badge">${esc(r.status)}</span></td></tr>`).join("");
-  $("empty").classList.toggle("hidden", list.length > 0);
-}
-["q", "fc", "fs"].forEach(id => $(id).addEventListener("input", render));
-$("rows").addEventListener("click", e => {
-  const tr = e.target.closest("tr.item"); if (!tr) return;
-  current = reports.find(r => r.id === tr.dataset.id); if (!current) return;
-  $("dl").innerHTML = [["ID", current.id], ["Waktu", new Date(current.createdAt).toLocaleString("id-ID")], ["Pelapor", current.reporter], ["Kategori", current.category], ["Lokasi", current.location], ["Deskripsi", current.description]]
-    .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
-  $("st").value = current.status; $("nt").value = current.adminNote || "";
-  $("det").classList.remove("hidden"); $("det").scrollIntoView({ behavior: "smooth" });
-});
-$("save").addEventListener("click", async () => {
-  if (!current) return;
-
-  const status = $("st").value;
-  const note = $("nt").value.trim();
-  const id = current.id;
-
-  try {
-    await update(ref(db, `reports/${id}`), {
-      status: status,
-      adminNote: note
-    });
-
-    await update(ref(db, `publicStatus/${id}`), {
-      status: status,
-      note: note
-    });
-
-    toast("Perubahan disimpan.");
-  } catch (err) {
-    console.error(err);
-    toast("Gagal menyimpan perubahan.", true);
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => {
+      element.className = "toast";
+    }, 3500);
   }
-});
+
+  function fillSelect(element, values, placeholder) {
+    element.replaceChildren();
+
+    if (placeholder) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = placeholder;
+      element.appendChild(option);
+    }
+
+    values.forEach(value => {
+      const option = document.createElement("option");
+      option.value = value;
+      option.textContent = value;
+      element.appendChild(option);
+    });
+  }
+
+  fillSelect($("fc"), CATEGORIES, "Semua kategori");
+  fillSelect($("fs"), STATUSES, "Semua status");
+  fillSelect($("st"), STATUSES, "");
+
+  let reports = [];
+  let current = null;
+  let unsubscribeReports = null;
+  let saveInProgress = false;
+
+  function updateStats() {
+    $("countTotal").textContent = reports.length;
+
+    const counts = {
+      "Menunggu Verifikasi": "countMenunggu",
+      "Diverifikasi": "countDiverifikasi",
+      "Sedang Ditangani": "countDitangani",
+      "Selesai": "countSelesai",
+      "Ditolak": "countDitolak"
+    };
+
+    Object.values(counts).forEach(id => {
+      $(id).textContent = "0";
+    });
+
+    reports.forEach(report => {
+      const target = counts[report.status];
+      if (target) {
+        $(target).textContent = Number($(target).textContent) + 1;
+      }
+    });
+  }
+
+  function formatDate(timestamp) {
+    const date = Number(timestamp);
+    if (!Number.isFinite(date) || date <= 0) return "Tidak tersedia";
+
+    return new Date(date).toLocaleString("id-ID", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+  }
+
+  function render() {
+    const query = $("q").value.trim().toLowerCase();
+    const category = $("fc").value;
+    const status = $("fs").value;
+
+    const filtered = reports.filter(report => {
+      const searchable = [
+        report.id,
+        report.location,
+        report.category,
+        report.description
+      ].join(" ").toLowerCase();
+
+      return (!category || report.category === category) &&
+             (!status || report.status === status) &&
+             (!query || searchable.includes(query));
+    });
+
+    $("rows").innerHTML = filtered.map(report => `
+      <tr class="item" data-id="${esc(report.id)}" tabindex="0"
+          aria-label="Buka laporan ${esc(report.id)}">
+        <td>${esc(formatDate(report.createdAt))}</td>
+        <td><span class="report-id">${esc(report.id)}</span></td>
+        <td>${esc(report.category || "Tidak berkategori")}</td>
+        <td>${esc(report.location || "Tidak tersedia")}</td>
+        <td>
+          <span class="status-badge status-${statusClass(report.status)}">
+            ${esc(report.status || "Belum ada status")}
+          </span>
+        </td>
+      </tr>
+    `).join("");
+
+    const isEmpty = filtered.length === 0;
+    $("empty").classList.toggle("hidden", !isEmpty);
+
+    if (reports.length === 0) {
+      $("emptyTitle").textContent = "Belum ada laporan";
+      $("emptyText").textContent = "Laporan baru akan muncul di sini.";
+    } else {
+      $("emptyTitle").textContent = "Tidak ada laporan yang cocok";
+      $("emptyText").textContent = "Coba ubah kata pencarian atau filter.";
+    }
+
+    updateStats();
+  }
+
+  function detailItem(label, value, full = false) {
+    return `
+      <div class="detail-item${full ? " full" : ""}">
+        <dt>${esc(label)}</dt>
+        <dd>${esc(value || "Tidak tersedia")}</dd>
+      </div>
+    `;
+  }
+
+  function openDetail(report) {
+    current = report;
+
+    $("dl").innerHTML = [
+      detailItem("ID laporan", report.id),
+      detailItem("Waktu laporan", formatDate(report.createdAt)),
+      detailItem("Nama pelapor", report.reporter),
+      detailItem("Kategori", report.category),
+      detailItem("Lokasi", report.location, true),
+      detailItem("Deskripsi laporan", report.description, true)
+    ].join("");
+
+    $("st").value = STATUSES.includes(report.status)
+      ? report.status
+      : STATUSES[0];
+
+    $("nt").value = report.adminNote || "";
+    $("det").classList.remove("hidden");
+    $("det").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  function closeDetail() {
+    current = null;
+    $("det").classList.add("hidden");
+    $("dl").replaceChildren();
+  }
+
+  async function saveChanges() {
+    if (!current || saveInProgress) return;
+
+    const user = auth.currentUser;
+    if (!user || user.isAnonymous) {
+      toast("Sesi admin tidak ditemukan. Silakan masuk kembali.", true);
+      return;
+    }
+
+    const status = $("st").value;
+    const note = $("nt").value.trim();
+    const id = current.id;
+
+    if (!STATUSES.includes(status)) {
+      toast("Pilih status yang valid.", true);
+      return;
+    }
+
+    saveInProgress = true;
+    $("save").disabled = true;
+    $("save").textContent = "Menyimpan...";
+
+    try {
+      // Memperbarui laporan utama.
+      await update(ref(db, `reports/${id}`), {
+        status,
+        adminNote: note
+      });
+
+      // Memperbarui data status publik untuk halaman pelacakan.
+      // Simpan hanya status dan catatan, bukan data pribadi pelapor.
+      await update(ref(db, `publicStatus/${id}`), {
+        status,
+        note
+      });
+
+      current = { ...current, status, adminNote: note };
+      toast("Perubahan berhasil disimpan.");
+    } catch (error) {
+      console.error("Gagal menyimpan laporan:", error);
+      toast("Gagal menyimpan. Periksa koneksi dan aturan Firebase.", true);
+    } finally {
+      saveInProgress = false;
+      $("save").disabled = false;
+      $("save").textContent = "Simpan perubahan";
+    }
+  }
+
+  $("lf").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const button = $("loginBtn");
+    button.disabled = true;
+    button.textContent = "Memeriksa akun...";
+
+    try {
+      await signInWithEmailAndPassword(
+        auth,
+        $("em").value.trim(),
+        $("pw").value
+      );
+    } catch (error) {
+      console.error("Login gagal:", error);
+      toast("Login gagal. Periksa email, kata sandi, dan koneksi.", true);
+    } finally {
+      button.disabled = false;
+      button.textContent = "Masuk ke dashboard";
+    }
+  });
+
+  $("out").addEventListener("click", async () => {
+    try {
+      await signOut(auth);
+      closeDetail();
+      toast("Kamu telah keluar.");
+    } catch (error) {
+      console.error(error);
+      toast("Gagal keluar. Coba lagi.", true);
+    }
+  });
+
+  $("save").addEventListener("click", saveChanges);
+  $("cancel").addEventListener("click", () => {
+    if (current) openDetail(current);
+  });
+  $("closeDetail").addEventListener("click", closeDetail);
+
+  ["q", "fc", "fs"].forEach(id => {
+    $(id).addEventListener("input", render);
+    $(id).addEventListener("change", render);
+  });
+
+  $("rows").addEventListener("click", event => {
+    const row = event.target.closest("tr.item");
+    if (!row) return;
+
+    const report = reports.find(item => item.id === row.dataset.id);
+    if (report) openDetail(report);
+  });
+
+  $("rows").addEventListener("keydown", event => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+
+    const row = event.target.closest("tr.item");
+    if (!row) return;
+
+    event.preventDefault();
+    const report = reports.find(item => item.id === row.dataset.id);
+    if (report) openDetail(report);
+  });
+
+  onAuthStateChanged(auth, async user => {
+    if (unsubscribeReports) {
+      unsubscribeReports();
+      unsubscribeReports = null;
+    }
+
+    let isAdmin = false;
+
+    if (user && !user.isAnonymous) {
+      try {
+        const token = await user.getIdTokenResult(true);
+        isAdmin = token.claims.admin === true;
+      } catch (error) {
+        console.error("Gagal memeriksa hak admin:", error);
+      }
+
+      if (!isAdmin) {
+        toast("Akun ini tidak memiliki akses administrator.", true);
+        await signOut(auth);
+      }
+    }
+
+    $("login").classList.toggle("hidden", isAdmin);
+    $("panel").classList.toggle("hidden", !isAdmin);
+    $("out").classList.toggle("hidden", !isAdmin);
+
+    if (!isAdmin) {
+      reports = [];
+      render();
+      closeDetail();
+      return;
+    }
+
+    unsubscribeReports = onValue(
+      ref(db, "reports"),
+      snapshot => {
+        reports = [];
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (data && typeof data === "object") {
+            reports.push({ ...data, id: child.key });
+          }
+        });
+
+        reports.sort((a, b) =>
+          (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0)
+        );
+
+        if (current) {
+          const refreshed = reports.find(item => item.id === current.id);
+          if (refreshed) current = refreshed;
+        }
+
+        render();
+      },
+      error => {
+        console.error("Gagal memuat laporan:", error);
+        toast("Gagal memuat laporan. Periksa aturan Firebase.", true);
+      }
+    );
+  });
 </script>
 </body>
 </html>
