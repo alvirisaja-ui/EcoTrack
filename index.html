@@ -1,99 +1,1281 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EcoTrack – Jaga lingkungan. Mulai dari sekitar.</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🌿</text></svg>">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#123f2b">
+  <meta name="description" content="EcoTrack membantu masyarakat melaporkan masalah lingkungan dan memantau tindak lanjutnya.">
+  <title>EcoTrack — Lingkungan Lebih Baik, Dimulai dari Kita</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='27' font-size='27'>🌿</text></svg>">
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    :root {
+      --forest: #123f2b;
+      --green: #20764c;
+      --lime: #c7f36b;
+      --mint: #eaf6ed;
+      --ink: #172b20;
+      --muted: #6b7c70;
+      --line: #e2eae3;
+      --white: #fff;
+      --shadow: 0 18px 55px rgba(18, 63, 43, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: #f8faf7;
+      font-family: Inter, "Segoe UI", system-ui, -apple-system, sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; }
+
+    .wrap {
+      width: min(1120px, calc(100% - 40px));
+      margin-inline: auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(255,255,255,.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(226,234,227,.9);
+    }
+
+    .site-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 76px;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 11px;
+      color: var(--forest);
+      text-decoration: none;
+      font-size: 1.35rem;
+      font-weight: 850;
+      letter-spacing: -.055em;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      background: var(--forest);
+      border-radius: 15px;
+      color: white;
+      box-shadow: 0 6px 16px rgba(18,63,43,.16);
+    }
+
+    .brand-mark svg { width: 26px; height: 26px; }
+
+    .brand small {
+      display: block;
+      font-size: .64rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 27px;
+    }
+
+    .nav-links a {
+      color: #52665a;
+      text-decoration: none;
+      font-size: .92rem;
+      font-weight: 650;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: var(--green); }
+
+    .nav-links .nav-cta {
+      background: var(--forest);
+      color: #fff;
+      border-radius: 12px;
+      padding: 11px 17px;
+    }
+
+    .nav-links .nav-cta:hover { background: var(--green); color: white; }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 76px 0 70px;
+      background:
+        radial-gradient(ellipse at 85% 15%, rgba(199,243,107,.19), transparent 33%),
+        radial-gradient(ellipse at 10% 90%, rgba(103,184,126,.16), transparent 32%),
+        var(--forest);
+      color: white;
+    }
+
+    .hero::before,
+    .hero::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(255,255,255,.09);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      width: 440px;
+      height: 440px;
+      right: -140px;
+      top: -210px;
+    }
+
+    .hero::after {
+      width: 320px;
+      height: 320px;
+      right: -80px;
+      top: -150px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr .85fr;
+      align-items: center;
+      gap: 55px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,.19);
+      background: rgba(255,255,255,.07);
+      border-radius: 99px;
+      color: #d9f5b6;
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: .045em;
+    }
+
+    .eyebrow-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 12px rgba(199,243,107,.6);
+    }
+
+    .hero h1 {
+      max-width: 700px;
+      margin: 23px 0 18px;
+      color: #fff;
+      font-size: clamp(2.7rem, 6.3vw, 5rem);
+      line-height: 1.03;
+      letter-spacing: -.075em;
+      font-weight: 850;
+    }
+
+    .hero h1 span { color: var(--lime); }
+
+    .hero-copy {
+      max-width: 540px;
+      margin: 0;
+      color: #d0dfd4;
+      font-size: 1.05rem;
+      line-height: 1.85;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 29px;
+    }
+
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      min-height: 49px;
+      padding: 12px 19px;
+      border: 0;
+      border-radius: 12px;
+      font: inherit;
+      font-size: .92rem;
+      font-weight: 750;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform .18s, background .18s, box-shadow .18s;
+    }
+
+    .button:hover { transform: translateY(-2px); }
+
+    .button-lime {
+      background: var(--lime);
+      color: var(--forest);
+      box-shadow: 0 8px 22px rgba(0,0,0,.12);
+    }
+
+    .button-lime:hover { background: #d6fa91; }
+
+    .button-glass {
+      color: #fff;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.22);
+    }
+
+    .button-glass:hover { background: rgba(255,255,255,.14); }
+
+    .hero-note {
+      margin-top: 22px;
+      color: #b7cdbd;
+      font-size: .82rem;
+    }
+
+    .hero-visual {
+      position: relative;
+      min-height: 340px;
+      display: grid;
+      place-items: center;
+    }
+
+    .planet {
+      position: relative;
+      width: min(310px, 80vw);
+      aspect-ratio: 1;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,255,255,.16);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 35% 28%, #7dba74, #39855a 48%, #1e6243 72%);
+      box-shadow: 0 25px 70px rgba(0,0,0,.2), inset -22px -20px 50px rgba(9,45,29,.22);
+    }
+
+    .planet svg { width: 72%; height: 72%; }
+
+    .float-card {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 13px 16px;
+      color: var(--ink);
+      background: #fff;
+      border: 1px solid rgba(255,255,255,.7);
+      border-radius: 15px;
+      box-shadow: 0 15px 40px rgba(0,0,0,.18);
+    }
+
+    .float-card.one { top: 20px; right: -4px; }
+    .float-card.two { bottom: 24px; left: -4px; }
+
+    .float-icon {
+      display: grid;
+      place-items: center;
+      width: 39px;
+      height: 39px;
+      flex-shrink: 0;
+      border-radius: 12px;
+      background: var(--mint);
+      font-size: 1.2rem;
+    }
+
+    .float-card strong { display: block; font-size: .85rem; }
+    .float-card small { display: block; color: var(--muted); font-size: .72rem; }
+
+    .section {
+      padding: 76px 0;
+    }
+
+    .section-heading {
+      max-width: 650px;
+      margin: 0 auto 35px;
+      text-align: center;
+    }
+
+    .section-kicker {
+      color: var(--green);
+      font-size: .77rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+    }
+
+    .section-heading h2 {
+      margin: 10px 0 12px;
+      color: var(--forest);
+      font-size: clamp(1.8rem, 4vw, 2.7rem);
+      line-height: 1.16;
+      letter-spacing: -.055em;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .step-card {
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .step-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .step-icon {
+      display: grid;
+      place-items: center;
+      width: 49px;
+      height: 49px;
+      margin-bottom: 19px;
+      border-radius: 15px;
+      background: var(--mint);
+      font-size: 1.4rem;
+    }
+
+    .step-number {
+      color: #8ca293;
+      font-size: .75rem;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .step-card h3 {
+      margin: 7px 0 8px;
+      color: var(--forest);
+      font-size: 1.08rem;
+    }
+
+    .step-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .report-section {
+      background: #edf5ee;
+    }
+
+    .report-layout {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      align-items: start;
+      gap: 42px;
+    }
+
+    .report-intro { padding-top: 14px; }
+
+    .report-intro h2 {
+      margin: 12px 0 15px;
+      color: var(--forest);
+      font-size: clamp(2rem, 4.5vw, 3rem);
+      line-height: 1.12;
+      letter-spacing: -.06em;
+    }
+
+    .report-intro > p {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    .trust-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 27px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      color: #41564a;
+      font-size: .9rem;
+    }
+
+    .trust-check {
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #d8efd9;
+      color: var(--green);
+      font-weight: 900;
+    }
+
+    .form-card {
+      padding: clamp(21px, 4vw, 34px);
+      border: 1px solid #e0eae1;
+      border-radius: 23px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .form-card h3 {
+      margin: 0 0 5px;
+      color: var(--forest);
+      font-size: 1.35rem;
+      letter-spacing: -.035em;
+    }
+
+    .form-description {
+      margin: 0 0 23px;
+      color: var(--muted);
+      font-size: .87rem;
+    }
+
+    .field { margin-bottom: 18px; }
+
+    .field label {
+      display: block;
+      margin-bottom: 7px;
+      color: #294434;
+      font-size: .87rem;
+      font-weight: 750;
+    }
+
+    .field label span {
+      color: #89998e;
+      font-weight: 500;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 13px 14px;
+      border: 1px solid #d9e4dc;
+      border-radius: 11px;
+      outline: none;
+      background: #fbfdfb;
+      color: var(--ink);
+      font: inherit;
+      font-size: .92rem;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .field textarea {
+      min-height: 125px;
+      resize: vertical;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: #4b9a6b;
+      box-shadow: 0 0 0 4px rgba(32,118,76,.1);
+      background: #fff;
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder { color: #9aa99f; }
+
+    .field-hint {
+      margin: 6px 0 0;
+      color: #829086;
+      font-size: .77rem;
+    }
+
+    .form-card .button {
+      width: 100%;
+      background: var(--forest);
+      color: white;
+      box-shadow: 0 8px 18px rgba(18,63,43,.12);
+    }
+
+    .form-card .button:hover { background: var(--green); }
+    .form-card .button:disabled { opacity: .65; cursor: wait; transform: none; }
+
+    .result {
+      margin-top: 17px;
+      padding: 18px;
+      border: 1px solid #cfe6d3;
+      border-radius: 13px;
+      background: #f0faf1;
+      color: #234e32;
+      overflow-wrap: anywhere;
+    }
+
+    .result strong { overflow-wrap: anywhere; }
+    .result.hidden { display: none; }
+
+    .result-id {
+      display: block;
+      margin: 11px 0;
+      padding: 12px;
+      border: 1px dashed #9ac6a4;
+      border-radius: 9px;
+      background: white;
+      color: var(--forest);
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+      font-size: .9rem;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+      user-select: all;
+    }
+
+    .copy-button {
+      padding: 8px 12px;
+      border: 1px solid #b9d9c1;
+      border-radius: 9px;
+      background: white;
+      color: var(--forest);
+      font: inherit;
+      font-size: .8rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .tracking-section { background: #fff; }
+
+    .tracking-card {
+      max-width: 790px;
+      margin: 0 auto;
+      padding: clamp(23px, 5vw, 42px);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background:
+        radial-gradient(ellipse at 100% 0%, #edf8e8, transparent 45%),
+        #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .tracking-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .tracking-heading .step-icon { flex-shrink: 0; margin: 0; }
+
+    .tracking-heading h2 {
+      margin: 0 0 6px;
+      color: var(--forest);
+      font-size: clamp(1.45rem, 3vw, 2rem);
+      letter-spacing: -.045em;
+    }
+
+    .tracking-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .tracking-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    .tracking-form input {
+      width: 100%;
+      min-width: 0;
+      padding: 14px;
+      border: 1px solid #d9e4dc;
+      border-radius: 11px;
+      outline: none;
+      background: #fff;
+      font: inherit;
+    }
+
+    .tracking-form input:focus {
+      border-color: var(--green);
+      box-shadow: 0 0 0 4px rgba(32,118,76,.1);
+    }
+
+    .tracking-form .button {
+      background: var(--forest);
+      color: white;
+    }
+
+    .tracking-form .button:disabled { opacity: .65; cursor: wait; }
+
+    .status-label {
+      display: inline-flex;
+      padding: 6px 11px;
+      border-radius: 99px;
+      background: #e8efff;
+      color: #3158a7;
+      font-size: .82rem;
+      font-weight: 800;
+    }
+
+    .status-menunggu { background: #fff2d4; color: #805500; }
+    .status-diverifikasi { background: #e8efff; color: #3158a7; }
+    .status-ditangani { background: #e8e4ff; color: #5940a1; }
+    .status-selesai { background: #dcf7e6; color: #176b45; }
+    .status-ditolak { background: #ffe6e6; color: #a32929; }
+
+    .tracking-details {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .tracking-row {
+      display: grid;
+      grid-template-columns: 120px minmax(0, 1fr);
+      gap: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #e4eee5;
+      font-size: .9rem;
+    }
+
+    .tracking-row:last-child { border-bottom: 0; padding-bottom: 0; }
+    .tracking-row span:first-child { color: var(--muted); }
+    .tracking-row span:last-child { font-weight: 650; overflow-wrap: anywhere; }
+
+    .bottom-cta {
+      padding: 54px 0;
+      background: #eaf5e8;
+    }
+
+    .bottom-cta-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 25px;
+    }
+
+    .bottom-cta h2 {
+      margin: 0 0 7px;
+      color: var(--forest);
+      font-size: clamp(1.5rem, 3vw, 2.15rem);
+      letter-spacing: -.045em;
+    }
+
+    .bottom-cta p { margin: 0; color: var(--muted); }
+
+    .bottom-cta .button {
+      flex-shrink: 0;
+      background: var(--forest);
+      color: white;
+    }
+
+    .site-footer {
+      padding: 30px 0;
+      background: #102f21;
+      color: #d5e4d9;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-brand {
+      color: white;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .footer-note {
+      margin: 4px 0 0;
+      color: #a9c0b0;
+      font-size: .82rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links a {
+      color: #d5e4d9;
+      font-size: .84rem;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover { color: var(--lime); }
+
+    .toast {
+      position: fixed;
+      z-index: 50;
+      bottom: 22px;
+      left: 50%;
+      width: max-content;
+      max-width: calc(100% - 28px);
+      padding: 12px 18px;
+      border-radius: 12px;
+      background: #173e2b;
+      color: white;
+      box-shadow: 0 12px 35px rgba(0,0,0,.17);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity .2s, transform .2s;
+      font-size: .9rem;
+      text-align: center;
+    }
+
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.err { background: #a32929; }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 850px) {
+      .hero-grid { grid-template-columns: 1fr; gap: 25px; }
+      .hero-visual { min-height: 310px; }
+      .planet { width: 255px; }
+      .float-card.one { right: max(0px, calc(50% - 185px)); }
+      .float-card.two { left: max(0px, calc(50% - 185px)); }
+      .report-layout { grid-template-columns: 1fr; gap: 28px; }
+      .report-intro { max-width: 650px; }
+      .trust-list { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 600px) {
+      .wrap { width: min(100% - 28px, 1120px); }
+      .site-nav { min-height: 65px; gap: 10px; }
+      .brand { font-size: 1.16rem; }
+      .brand-mark { width: 38px; height: 38px; border-radius: 12px; }
+      .nav-links { gap: 13px; }
+      .nav-links a { font-size: .78rem; }
+      .nav-links .nav-cta { padding: 9px 11px; }
+      .hero { padding: 55px 0 45px; }
+      .hero h1 { font-size: clamp(2.65rem, 12vw, 4rem); }
+      .hero-copy { font-size: .96rem; }
+      .hero-visual { min-height: 270px; }
+      .planet { width: 225px; }
+      .float-card { padding: 10px 12px; }
+      .float-card.one { top: 7px; right: -2px; }
+      .float-card.two { bottom: 9px; left: -2px; }
+      .float-icon { width: 33px; height: 33px; }
+      .float-card strong { font-size: .78rem; }
+      .float-card small { font-size: .67rem; }
+      .section { padding: 54px 0; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .step-card { padding: 21px; }
+      .trust-list { grid-template-columns: 1fr; }
+      .form-card { padding: 20px; border-radius: 17px; }
+      .tracking-form { grid-template-columns: 1fr; }
+      .tracking-form .button { width: 100%; }
+      .tracking-heading { gap: 12px; }
+      .tracking-row { grid-template-columns: 95px minmax(0,1fr); }
+      .bottom-cta-inner { align-items: flex-start; flex-direction: column; }
+      .bottom-cta .button { width: 100%; }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header><div class="wrap">
-  <a class="logo" href="#"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#e8f5e9" stroke="#5b9bd5" stroke-width="2"/><path d="M9 21c0-8 6-12 14-12 0 8-4 14-12 14M9 23l8-8" fill="#2e7d32" stroke="#1b5e20" stroke-width="1.5" stroke-linecap="round"/></svg>EcoTrack</a>
-  <nav><a href="#lapor">Lapor</a><a href="#status">Cek status</a></nav>
-</div></header>
+<header class="site-header">
+  <div class="wrap site-nav">
+    <a class="brand" href="#" aria-label="EcoTrack beranda">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M26 5C14 5 6 11 6 20c0 4 3 7 7 7 9 0 13-10 13-22Z"
+                fill="#C7F36B"/>
+          <path d="M4 28c5-9 10-13 17-17" stroke="white"
+                stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      <span>EcoTrack<small>Care for our planet</small></span>
+    </a>
 
-<div class="hero"><div class="wrap">
-  <h1>Jaga lingkungan.<br>Mulai dari sekitar.</h1>
-  <p>EcoTrack membantu warga mendokumentasikan masalah lingkungan secara terstruktur, agar bisa diverifikasi dan ditindaklanjuti.</p>
-  <a class="btn" href="#lapor">Buat laporan</a>
-</div></div>
-
-<section id="lapor"><div class="wrap"><div class="card">
-  <h2>Laporkan masalah lingkungan</h2>
-  <form id="f" novalidate>
-    <label for="cat">Kategori masalah</label>
-    <select id="cat" required></select>
-    <label for="loc">Lokasi masalah</label>
-    <input id="loc" maxlength="200" placeholder="Contoh: Jl. Slamet Riyadi, dekat pasar" required>
-    <label for="desc">Deskripsi</label>
-    <textarea id="desc" rows="4" maxlength="1000" placeholder="Ceritakan apa yang terjadi dan sejak kapan" required></textarea>
-    <label for="name">Nama pelapor (opsional)</label>
-    <input id="name" maxlength="60" placeholder="Boleh dikosongkan">
-    <p class="hint">Unggah foto belum diaktifkan. Lihat panduan untuk menambahkannya nanti.</p>
-    <button class="btn" id="send" type="submit">Kirim laporan</button>
-  </form>
-  <div id="done" class="result hidden"></div>
-</div></div></section>
-
-<section id="status"><div class="wrap"><div class="card">
-  <h2>Cek status laporan</h2>
-  <div class="row">
-    <input id="rid" placeholder="Masukkan ID laporan" aria-label="ID laporan">
-    <button class="btn alt" id="chk" style="flex:0 0 auto">Cek status</button>
+    <nav class="nav-links" aria-label="Navigasi utama">
+      <a href="#cara-kerja">Cara kerja</a>
+      <a href="#status">Cek status</a>
+      <a class="nav-cta" href="#lapor">+ Buat laporan</a>
+    </nav>
   </div>
-  <div id="out" class="result hidden"></div>
-</div></div></section>
+</header>
 
-<footer>EcoTrack · Jaga lingkungan. Mulai dari sekitar.</footer>
-<div id="toast" class="toast" role="status"></div>
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="eyebrow">
+          <span class="eyebrow-dot"></span>
+          SATU AKSI KECIL, DAMPAK BESAR
+        </div>
+
+        <h1>Lingkungan lebih baik. <span>Dimulai dari kita.</span></h1>
+
+        <p class="hero-copy">
+          Lihat masalah di sekitar? Jangan diam saja. Laporkan masalah lingkungan
+          melalui EcoTrack dan pantau perkembangan penanganannya dengan mudah.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-lime" href="#lapor">
+            Buat laporan <span aria-hidden="true">↗</span>
+          </a>
+          <a class="button button-glass" href="#cara-kerja">
+            Pelajari cara kerja
+          </a>
+        </div>
+
+        <div class="hero-note">🌱 Lebih peduli hari ini, lebih baik untuk esok.</div>
+      </div>
+
+      <div class="hero-visual" aria-label="Ilustrasi planet hijau">
+        <div class="planet">
+          <svg viewBox="0 0 260 260" fill="none" aria-hidden="true">
+            <path d="M40 143c17-35 43-49 66-38 22 10 16 38-3 52-21 15-46 8-63-14Z"
+                  fill="#C7F36B" opacity=".95"/>
+            <path d="M126 46c23-12 54-2 57 19 3 17-12 27-27 33-19 8-25 27-15 42 10 15 33 12 42 29 10 18-1 40-20 46-22 7-47-10-47-34 0-18-14-26-27-32-23-10-28-36-15-56 12-19 31-33 52-47Z"
+                  fill="#B4EA81"/>
+            <path d="M37 169c31 13 59 13 78 1 20-12 25-29 46-30 22-1 37 17 59 13"
+                  stroke="#E4F8C9" stroke-width="5" stroke-linecap="round" opacity=".7"/>
+            <path d="M72 67c-6 21 2 40 19 48M191 89c-18 11-24 26-19 44M112 203c18-8 27-22 25-39"
+                  stroke="#E4F8C9" stroke-width="5" stroke-linecap="round" opacity=".65"/>
+            <circle cx="54" cy="87" r="5" fill="#E4F8C9"/>
+            <circle cx="204" cy="176" r="7" fill="#E4F8C9"/>
+            <circle cx="92" cy="222" r="4" fill="#E4F8C9"/>
+          </svg>
+        </div>
+
+        <div class="float-card one">
+          <span class="float-icon">♻️</span>
+          <span><strong>Peduli lingkungan</strong><small>Dimulai dari sekitar</small></span>
+        </div>
+
+        <div class="float-card two">
+          <span class="float-icon">🌿</span>
+          <span><strong>Berani melapor</strong><small>Jadi bagian perubahan</small></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="cara-kerja">
+    <div class="wrap">
+      <div class="section-heading">
+        <span class="section-kicker">Mudah dilakukan</span>
+        <h2>Tiga langkah untuk lingkungan yang lebih baik</h2>
+        <p>Mulai dari menemukan masalah hingga memantau status laporanmu.</p>
+      </div>
+
+      <div class="steps-grid">
+        <article class="step-card">
+          <div class="step-icon">📍</div>
+          <span class="step-number">LANGKAH 01</span>
+          <h3>Temukan masalah</h3>
+          <p>Kenali masalah di sekitar, seperti sampah menumpuk, selokan tersumbat, atau pencemaran.</p>
+        </article>
+
+        <article class="step-card">
+          <div class="step-icon">📝</div>
+          <span class="step-number">LANGKAH 02</span>
+          <h3>Kirim laporan</h3>
+          <p>Isi kategori, lokasi, dan deskripsi yang jelas agar laporan mudah dipahami.</p>
+        </article>
+
+        <article class="step-card">
+          <div class="step-icon">🔎</div>
+          <span class="step-number">LANGKAH 03</span>
+          <h3>Pantau perkembangannya</h3>
+          <p>Simpan ID laporanmu dan gunakan fitur cek status untuk melihat pembaruan.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section report-section" id="lapor">
+    <div class="wrap report-layout">
+      <div class="report-intro">
+        <span class="section-kicker">Suaramu berarti</span>
+        <h2>Perubahan dimulai dari satu laporan.</h2>
+        <p>
+          Bantu dokumentasikan masalah lingkungan di sekitarmu.
+          Informasi yang jelas membantu laporan dipahami dan ditindaklanjuti.
+        </p>
+
+        <div class="trust-list">
+          <div class="trust-item">
+            <span class="trust-check">✓</span>
+            <span>Isi laporan secara jelas dan sesuai kondisi sebenarnya.</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-check">✓</span>
+            <span>Simpan ID laporan setelah berhasil dikirim.</span>
+          </div>
+          <div class="trust-item">
+            <span class="trust-check">✓</span>
+            <span>Pantau status laporan melalui fitur pelacakan.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>Laporkan masalah lingkungan</h3>
+        <p class="form-description">Lengkapi informasi berikut dengan benar.</p>
+
+        <form id="f" novalidate>
+          <div class="field">
+            <label for="cat">Kategori masalah</label>
+            <select id="cat" required></select>
+          </div>
+
+          <div class="field">
+            <label for="loc">Lokasi masalah</label>
+            <input id="loc" maxlength="200"
+                   placeholder="Contoh: Jl. Slamet Riyadi, dekat pasar"
+                   autocomplete="street-address" required>
+            <p class="field-hint">Sebutkan lokasi yang cukup jelas untuk ditemukan.</p>
+          </div>
+
+          <div class="field">
+            <label for="desc">Deskripsi masalah</label>
+            <textarea id="desc" rows="4" maxlength="1000"
+                      placeholder="Apa yang terjadi? Sejak kapan masalah terlihat?"
+                      required></textarea>
+            <p class="field-hint"><span id="descCount">0</span>/1000 karakter</p>
+          </div>
+
+          <div class="field">
+            <label for="name">Nama pelapor <span>(opsional)</span></label>
+            <input id="name" maxlength="60" placeholder="Nama atau kosongkan untuk anonim"
+                   autocomplete="name">
+          </div>
+
+          <button class="button" id="send" type="submit">
+            <span>Kirim laporan</span><span aria-hidden="true">→</span>
+          </button>
+        </form>
+
+        <div id="done" class="result hidden" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section tracking-section" id="status">
+    <div class="wrap">
+      <div class="tracking-card">
+        <div class="tracking-heading">
+          <div class="step-icon">🔍</div>
+          <div>
+            <h2>Bagaimana perkembangan laporanmu?</h2>
+            <p>Masukkan ID yang kamu terima setelah mengirim laporan.</p>
+          </div>
+        </div>
+
+        <form id="trackingForm" class="tracking-form">
+          <input id="rid" placeholder="Tempel ID laporan di sini"
+                 aria-label="ID laporan" autocomplete="off" required>
+          <button class="button" id="chk" type="submit">Cek status →</button>
+        </form>
+
+        <div id="out" class="result hidden" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bottom-cta">
+    <div class="wrap bottom-cta-inner">
+      <div>
+        <h2>Lingkungan yang lebih baik butuh kepedulian kita.</h2>
+        <p>Mulai dengan melaporkan masalah yang kamu temukan di sekitarmu.</p>
+      </div>
+      <a class="button" href="#lapor">Buat laporan sekarang ↗</a>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <div>
+      <div class="footer-brand">🌿 EcoTrack</div>
+      <p class="footer-note">Jaga lingkungan. Mulai dari sekitar.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#cara-kerja">Cara kerja</a>
+      <a href="#lapor">Buat laporan</a>
+      <a href="#status">Cek status</a>
+    </div>
+    <div class="footer-note">© <span id="year"></span> EcoTrack</div>
+  </div>
+</footer>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script type="module">
-import { auth, db, CATEGORIES } from "./firebase.js";
-import { signInAnonymously } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import { ref, push, update, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+  import { auth, db, CATEGORIES } from "./firebase.js";
+  import {
+    signInAnonymously
+  } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+  import {
+    ref, push, update, get, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
 
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function toast(msg, err) { const t = $("toast"); t.textContent = msg; t.className = "toast show" + (err ? " err" : ""); setTimeout(() => t.className = "toast", 3500); }
-$("cat").innerHTML = CATEGORIES.map(c => `<option>${esc(c)}</option>`).join("");
+  const $ = id => document.getElementById(id);
 
-const ready = signInAnonymously(auth).catch(e => console.error(e));
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
 
-$("f").addEventListener("submit", async e => {
-  e.preventDefault();
-  const category = $("cat").value, location = $("loc").value.trim(), description = $("desc").value.trim(), reporter = $("name").value.trim() || "Anonim";
-  if (location.length < 3) return toast("Lokasi minimal 3 karakter.", true);
-  if (description.length < 10) return toast("Deskripsi minimal 10 karakter.", true);
-  $("send").disabled = true;
-  try {
-    await ready;
-    if (!auth.currentUser) throw new Error("Belum login anonim");
-    const id = push(ref(db, "reports")).key;
-    await update(ref(db), {
-      [`reports/${id}`]: { reporter, category, location, description, photoURL: "", status: "Menunggu Verifikasi", createdAt: serverTimestamp(), uid: auth.currentUser.uid },
-      [`publicStatus/${id}`]: { category, status: "Menunggu Verifikasi", createdAt: serverTimestamp() }
-    });
-    $("done").classList.remove("hidden");
-    $("done").innerHTML = `Laporan terkirim. Simpan ID laporan Anda:<br><strong>${esc(id)}</strong>`;
-    $("f").reset(); toast("Laporan berhasil dikirim.");
-  } catch (err) {
-    console.error(err); toast("Laporan gagal dikirim. Periksa koneksi lalu coba lagi.", true);
+  const statusClass = status => ({
+    "Menunggu Verifikasi": "status-menunggu",
+    "Diverifikasi": "status-diverifikasi",
+    "Sedang Ditangani": "status-ditangani",
+    "Selesai": "status-selesai",
+    "Ditolak": "status-ditolak"
+  })[status] || "";
+
+  function toast(message, isError = false) {
+    const element = $("toast");
+    element.textContent = message;
+    element.className = "toast show" + (isError ? " err" : "");
+
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(() => {
+      element.className = "toast";
+    }, 3500);
   }
-  $("send").disabled = false;
-});
 
-$("chk").addEventListener("click", async () => {
-  const id = $("rid").value.trim();
-  if (!id || /[.#$\[\]\/]/.test(id)) return toast("Masukkan ID laporan yang valid.", true);
-  try {
-    await ready;
-    const s = await get(ref(db, "publicStatus/" + id));
-    const out = $("out"); out.classList.remove("hidden");
-    if (!s.exists()) { out.textContent = "ID tidak ditemukan."; return; }
-    const d = s.val();
-    out.innerHTML = `Status: <span class="badge">${esc(d.status)}</span><br>Kategori: ${esc(d.category)}<br>Dibuat: ${new Date(d.createdAt).toLocaleString("id-ID")}` + (d.note ? `<br>Catatan petugas: ${esc(d.note)}` : "");
-  } catch (err) { console.error(err); toast("Gagal memeriksa status.", true); }
-});
+  function showResult(element, message, isError = false) {
+    element.classList.remove("hidden");
+    element.textContent = message;
+    element.style.background = isError ? "#fff0f0" : "";
+    element.style.color = isError ? "#912d2d" : "";
+    element.style.borderColor = isError ? "#f0caca" : "";
+  }
+
+  function fillCategories() {
+    $("cat").replaceChildren();
+
+    CATEGORIES.forEach(category => {
+      const option = document.createElement("option");
+      option.value = category;
+      option.textContent = category;
+      $("cat").appendChild(option);
+    });
+  }
+
+  fillCategories();
+  $("year").textContent = new Date().getFullYear();
+
+  $("desc").addEventListener("input", () => {
+    $("descCount").textContent = $("desc").value.length;
+  });
+
+  // Pertahankan autentikasi anonim Firebase untuk pengunjung.
+  const ready = signInAnonymously(auth).catch(error => {
+    console.error("Autentikasi anonim gagal:", error);
+    throw error;
+  });
+
+  $("f").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const category = $("cat").value;
+    const location = $("loc").value.trim();
+    const description = $("desc").value.trim();
+    const reporter = $("name").value.trim() || "Anonim";
+
+    $("done").classList.add("hidden");
+
+    if (!CATEGORIES.includes(category)) {
+      toast("Pilih kategori yang valid.", true);
+      return;
+    }
+
+    if (location.length < 3) {
+      toast("Lokasi minimal 3 karakter.", true);
+      $("loc").focus();
+      return;
+    }
+
+    if (description.length < 10) {
+      toast("Deskripsi minimal 10 karakter.", true);
+      $("desc").focus();
+      return;
+    }
+
+    const button = $("send");
+    button.disabled = true;
+    button.innerHTML = "<span>Mengirim laporan...</span>";
+
+    try {
+      await ready;
+
+      if (!auth.currentUser) {
+        throw new Error("Autentikasi belum tersedia.");
+      }
+
+      const reportRef = push(ref(db, "reports"));
+      const id = reportRef.key;
+      const createdAt = serverTimestamp();
+
+      await update(ref(db), {
+        [`reports/${id}`]: {
+          reporter,
+          category,
+          location,
+          description,
+          photoURL: "",
+          status: "Menunggu Verifikasi",
+          createdAt,
+          uid: auth.currentUser.uid
+        },
+        [`publicStatus/${id}`]: {
+          category,
+          status: "Menunggu Verifikasi",
+          createdAt
+        }
+      });
+
+      $("done").classList.remove("hidden");
+      $("done").style.background = "";
+      $("done").style.color = "";
+      $("done").style.borderColor = "";
+      $("done").innerHTML = `
+        <strong>✓ Laporan berhasil dikirim!</strong>
+        <p style="margin:7px 0 0">Simpan ID berikut untuk mengecek perkembangan laporanmu.</p>
+        <span class="result-id" id="newReportId">${esc(id)}</span>
+        <button class="copy-button" id="copyId" type="button">Salin ID laporan</button>
+      `;
+
+      $("copyId").addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(id);
+          toast("ID laporan berhasil disalin.");
+        } catch {
+          toast("Silakan salin ID laporan secara manual.", true);
+        }
+      });
+
+      $("f").reset();
+      $("descCount").textContent = "0";
+      $("done").scrollIntoView({ behavior: "smooth", block: "nearest" });
+      toast("Laporan berhasil dikirim.");
+    } catch (error) {
+      console.error("Pengiriman laporan gagal:", error);
+      toast("Laporan gagal dikirim. Periksa koneksi dan izin Firebase.", true);
+    } finally {
+      button.disabled = false;
+      button.innerHTML = "<span>Kirim laporan</span><span aria-hidden='true'>→</span>";
+    }
+  });
+
+  $("trackingForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const id = $("rid").value.trim();
+    const output = $("out");
+    const button = $("chk");
+
+    output.classList.add("hidden");
+
+    if (!id || /[.#$\[\]\/]/.test(id)) {
+      toast("Masukkan ID laporan yang valid.", true);
+      $("rid").focus();
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Memeriksa...";
+
+    try {
+      await ready;
+
+      const snapshot = await get(ref(db, "publicStatus/" + id));
+
+      if (!snapshot.exists()) {
+        showResult(output, "ID laporan tidak ditemukan. Periksa kembali ID yang kamu masukkan.", true);
+        return;
+      }
+
+      const data = snapshot.val();
+      const status = data.status || "Belum ada status";
+      const category = data.category || "Tidak tersedia";
+
+      output.classList.remove("hidden");
+      output.style.background = "";
+      output.style.color = "";
+      output.style.borderColor = "";
+
+      output.innerHTML = `
+        <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:16px">
+          <strong style="font-size:1.05rem">Hasil pelacakan</strong>
+          <span class="status-label ${statusClass(status)}">${esc(status)}</span>
+        </div>
+        <div class="tracking-details">
+          <div class="tracking-row">
+            <span>ID laporan</span>
+            <span>${esc(id)}</span>
+          </div>
+          <div class="tracking-row">
+            <span>Kategori</span>
+            <span>${esc(category)}</span>
+          </div>
+          <div class="tracking-row">
+            <span>Dibuat</span>
+            <span>${esc(data.createdAt ? new Date(data.createdAt).toLocaleString("id-ID") : "Tidak tersedia")}</span>
+          </div>
+          ${data.note ? `
+            <div class="tracking-row">
+              <span>Catatan petugas</span>
+              <span>${esc(data.note)}</span>
+            </div>
+          ` : ""}
+        </div>
+      `;
+
+      output.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    } catch (error) {
+      console.error("Pemeriksaan status gagal:", error);
+      showResult(output, "Gagal memeriksa status. Periksa koneksi internet dan izin Firebase.", true);
+    } finally {
+      button.disabled = false;
+      button.textContent = "Cek status →";
+    }
+  });
 </script>
 </body>
 </html>
