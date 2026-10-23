@@ -1,0 +1,13 @@
+
+{
+  "name": "ecotrack",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "set-admin": "node set-admin.js"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.5.0"
+  }
+}
