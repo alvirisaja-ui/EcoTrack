@@ -16,4 +16,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getDatabase(app);
 export const CATEGORIES = ["Sampah menumpuk","Selokan tersumbat","Pencemaran air","Pencemaran udara","Kerusakan ruang hijau"];
-export const STATUSES = ["Menunggu Verifikasi","Diverifikasi","Sedang Ditangani","Selesai"];
+export const STATUSES = ["Menunggu Verifikasi","Diverifikasi","Ditolak","Sedang Ditangani","Selesai"];
