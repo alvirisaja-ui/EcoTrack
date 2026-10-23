@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EcoTrack Admin</title>
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="index.html">🌿 EcoTrack Admin</a>
+  <button class="btn alt hidden" id="out">Keluar</button>
+</div></header>
+
+<section id="login"><div class="wrap" style="max-width:420px"><div class="card">
+  <h2>Masuk admin</h2>
+  <form id="lf">
+    <label for="em">Email</label><input id="em" type="email" autocomplete="username" required>
+    <label for="pw">Kata sandi</label><input id="pw" type="password" autocomplete="current-password" required>
+    <p style="margin-top:16px"><button class="btn" type="submit">Masuk</button></p>
+  </form>
+</div></div></section>
+
+<section id="panel" class="hidden"><div class="wrap">
+  <div class="card">
+    <div class="row">
+      <input id="q" placeholder="Cari ID atau lokasi" aria-label="Cari">
+      <select id="fc" aria-label="Filter kategori"></select>
+      <select id="fs" aria-label="Filter status"></select>
+    </div>
+    <div class="scroll" style="margin-top:14px"><table>
+      <thead><tr><th>Waktu</th><th>ID</th><th>Kategori</th><th>Lokasi</th><th>Status</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+    <p id="empty" class="hint hidden">Belum ada laporan yang cocok.</p>
+  </div>
+  <div class="card hidden" id="det" style="margin-top:18px">
+    <h2>Detail laporan</h2>
+    <dl class="detail" id="dl"></dl>
+    <label for="st">Status</label><select id="st"></select>
+    <label for="nt">Catatan tindak lanjut</label><textarea id="nt" rows="3" maxlength="500"></textarea>
+    <p><button class="btn" id="save">Simpan perubahan</button></p>
+  </div>
+</div></section>
+<div id="toast" class="toast" role="status"></div>
+
+<script type="module">
+import { auth, db, CATEGORIES, STATUSES } from "./firebase.js";
+import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import { ref, onValue, update } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(msg, err) { const t = $("toast"); t.textContent = msg; t.className = "toast show" + (err ? " err" : ""); setTimeout(() => t.className = "toast", 3500); }
+const opts = (list, first) => (first ? `<option value="">${first}</option>` : "") + list.map(x => `<option>${esc(x)}</option>`).join("");
+$("fc").innerHTML = opts(CATEGORIES, "Semua kategori");
+$("fs").innerHTML = opts(STATUSES, "Semua status");
+$("st").innerHTML = opts(STATUSES);
+
+let reports = [], current = null, unsub = null;
+
+$("lf").addEventListener("submit", async e => {
+  e.preventDefault();
+  try { await signInWithEmailAndPassword(auth, $("em").value, $("pw").value); }
+  catch { toast("Email atau kata sandi salah.", true); }
+});
+$("out").addEventListener("click", () => signOut(auth));
+
+onAuthStateChanged(auth, async user => {
+  if (unsub) { unsub(); unsub = null; }
+  const ok = user && !user.isAnonymous && (await user.getIdTokenResult(true)).claims.admin === true;
+  if (user && !user.isAnonymous && !ok) { toast("Akun ini bukan admin.", true); await signOut(auth); return; }
+  $("login").classList.toggle("hidden", !!ok);
+  $("panel").classList.toggle("hidden", !ok);
+  $("out").classList.toggle("hidden", !ok);
+  if (ok) unsub = onValue(ref(db, "reports"), s => {
+    reports = []; s.forEach(c => { reports.push({ id: c.key, ...c.val() }); });
+    reports.sort((a, b) => b.createdAt - a.createdAt); render();
+  }, err => { console.error(err); toast("Gagal memuat laporan.", true); });
+});
+
+function render() {
+  const q = $("q").value.toLowerCase(), fc = $("fc").value, fs = $("fs").value;
+  const list = reports.filter(r => (!fc || r.category === fc) && (!fs || r.status === fs) &&
+    (!q || r.id.toLowerCase().includes(q) || (r.location || "").toLowerCase().includes(q)));
+  $("rows").innerHTML = list.map(r => `<tr class="item" data-id="${esc(r.id)}"><td>${new Date(r.createdAt).toLocaleString("id-ID")}</td><td>${esc(r.id)}</td><td>${esc(r.category)}</td><td>${esc(r.location)}</td><td><span class="badge">${esc(r.status)}</span></td></tr>`).join("");
+  $("empty").classList.toggle("hidden", list.length > 0);
+}
+["q", "fc", "fs"].forEach(id => $(id).addEventListener("input", render));
+$("rows").addEventListener("click", e => {
+  const tr = e.target.closest("tr.item"); if (!tr) return;
+  current = reports.find(r => r.id === tr.dataset.id); if (!current) return;
+  $("dl").innerHTML = [["ID", current.id], ["Waktu", new Date(current.createdAt).toLocaleString("id-ID")], ["Pelapor", current.reporter], ["Kategori", current.category], ["Lokasi", current.location], ["Deskripsi", current.description]]
+    .map(([k, v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("");
+  $("st").value = current.status; $("nt").value = current.adminNote || "";
+  $("det").classList.remove("hidden"); $("det").scrollIntoView({ behavior: "smooth" });
+});
+$("save").addEventListener("click", async () => {
+  if (!current) return;
+  const status = $("st").value, note = $("nt").value.trim(), id = current.id;
+  try {
+    await update(ref(db), {
+      [`reports/${id}/status`]: status, [`reports/${id}/adminNote`]: note,
+      [`publicStatus/${id}/status`]: status, [`publicStatus/${id}/note`]: note
+    });
+    toast("Perubahan disimpan.");
+  } catch (err) { console.error(err); toast("Gagal menyimpan. Pastikan Anda login sebagai admin.", true); }
+});
+</script>
+</body>
+</html>

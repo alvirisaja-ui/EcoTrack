@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EcoTrack – Jaga lingkungan. Mulai dari sekitar.</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>🌿</text></svg>">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="#"><svg width="28" height="28" viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#e8f5e9" stroke="#5b9bd5" stroke-width="2"/><path d="M9 21c0-8 6-12 14-12 0 8-4 14-12 14M9 23l8-8" fill="#2e7d32" stroke="#1b5e20" stroke-width="1.5" stroke-linecap="round"/></svg>EcoTrack</a>
+  <nav><a href="#lapor">Lapor</a><a href="#status">Cek status</a></nav>
+</div></header>
+
+<div class="hero"><div class="wrap">
+  <h1>Jaga lingkungan.<br>Mulai dari sekitar.</h1>
+  <p>EcoTrack membantu warga mendokumentasikan masalah lingkungan secara terstruktur, agar bisa diverifikasi dan ditindaklanjuti.</p>
+  <a class="btn" href="#lapor">Buat laporan</a>
+</div></div>
+
+<section id="lapor"><div class="wrap"><div class="card">
+  <h2>Laporkan masalah lingkungan</h2>
+  <form id="f" novalidate>
+    <label for="cat">Kategori masalah</label>
+    <select id="cat" required></select>
+    <label for="loc">Lokasi masalah</label>
+    <input id="loc" maxlength="200" placeholder="Contoh: Jl. Slamet Riyadi, dekat pasar" required>
+    <label for="desc">Deskripsi</label>
+    <textarea id="desc" rows="4" maxlength="1000" placeholder="Ceritakan apa yang terjadi dan sejak kapan" required></textarea>
+    <label for="name">Nama pelapor (opsional)</label>
+    <input id="name" maxlength="60" placeholder="Boleh dikosongkan">
+    <p class="hint">Unggah foto belum diaktifkan. Lihat panduan untuk menambahkannya nanti.</p>
+    <button class="btn" id="send" type="submit">Kirim laporan</button>
+  </form>
+  <div id="done" class="result hidden"></div>
+</div></div></section>
+
+<section id="status"><div class="wrap"><div class="card">
+  <h2>Cek status laporan</h2>
+  <div class="row">
+    <input id="rid" placeholder="Masukkan ID laporan" aria-label="ID laporan">
+    <button class="btn alt" id="chk" style="flex:0 0 auto">Cek status</button>
+  </div>
+  <div id="out" class="result hidden"></div>
+</div></div></section>
+
+<footer>EcoTrack · Jaga lingkungan. Mulai dari sekitar.</footer>
+<div id="toast" class="toast" role="status"></div>
+
+<script type="module">
+import { auth, db, CATEGORIES } from "./firebase.js";
+import { signInAnonymously } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import { ref, push, update, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function toast(msg, err) { const t = $("toast"); t.textContent = msg; t.className = "toast show" + (err ? " err" : ""); setTimeout(() => t.className = "toast", 3500); }
+$("cat").innerHTML = CATEGORIES.map(c => `<option>${esc(c)}</option>`).join("");
+
+const ready = signInAnonymously(auth).catch(e => console.error(e));
+
+$("f").addEventListener("submit", async e => {
+  e.preventDefault();
+  const category = $("cat").value, location = $("loc").value.trim(), description = $("desc").value.trim(), reporter = $("name").value.trim() || "Anonim";
+  if (location.length < 3) return toast("Lokasi minimal 3 karakter.", true);
+  if (description.length < 10) return toast("Deskripsi minimal 10 karakter.", true);
+  $("send").disabled = true;
+  try {
+    await ready;
+    if (!auth.currentUser) throw new Error("Belum login anonim");
+    const id = push(ref(db, "reports")).key;
+    await update(ref(db), {
+      [`reports/${id}`]: { reporter, category, location, description, photoURL: "", status: "Menunggu Verifikasi", createdAt: serverTimestamp(), uid: auth.currentUser.uid },
+      [`publicStatus/${id}`]: { category, status: "Menunggu Verifikasi", createdAt: serverTimestamp() }
+    });
+    $("done").classList.remove("hidden");
+    $("done").innerHTML = `Laporan terkirim. Simpan ID laporan Anda:<br><strong>${esc(id)}</strong>`;
+    $("f").reset(); toast("Laporan berhasil dikirim.");
+  } catch (err) {
+    console.error(err); toast("Laporan gagal dikirim. Periksa koneksi lalu coba lagi.", true);
+  }
+  $("send").disabled = false;
+});
+
+$("chk").addEventListener("click", async () => {
+  const id = $("rid").value.trim();
+  if (!id || /[.#$\[\]\/]/.test(id)) return toast("Masukkan ID laporan yang valid.", true);
+  try {
+    await ready;
+    const s = await get(ref(db, "publicStatus/" + id));
+    const out = $("out"); out.classList.remove("hidden");
+    if (!s.exists()) { out.textContent = "ID tidak ditemukan."; return; }
+    const d = s.val();
+    out.innerHTML = `Status: <span class="badge">${esc(d.status)}</span><br>Kategori: ${esc(d.category)}<br>Dibuat: ${new Date(d.createdAt).toLocaleString("id-ID")}` + (d.note ? `<br>Catatan petugas: ${esc(d.note)}` : "");
+  } catch (err) { console.error(err); toast("Gagal memeriksa status.", true); }
+});
+</script>
+</body>
+</html>

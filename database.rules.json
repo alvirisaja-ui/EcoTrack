@@ -1,0 +1,68 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "reports": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".indexOn": [
+        "createdAt"
+      ],
+      "$id": {
+        ".write": "auth != null && ((!data.exists() && newData.exists() && newData.child('uid').val() === auth.uid) || auth.token.admin === true)",
+        ".validate": "newData.hasChildren(['reporter','category','location','description','status','createdAt','uid'])",
+        "reporter": {
+          ".validate": "newData.isString() && newData.val().length >= 1 && newData.val().length <= 60"
+        },
+        "category": {
+          ".validate": "newData.val() === 'Sampah menumpuk' || newData.val() === 'Selokan tersumbat' || newData.val() === 'Pencemaran air' || newData.val() === 'Pencemaran udara' || newData.val() === 'Kerusakan ruang hijau'"
+        },
+        "location": {
+          ".validate": "newData.isString() && newData.val().length >= 3 && newData.val().length <= 200"
+        },
+        "description": {
+          ".validate": "newData.isString() && newData.val().length >= 10 && newData.val().length <= 1000"
+        },
+        "photoURL": {
+          ".validate": "newData.isString() && newData.val().length <= 500"
+        },
+        "status": {
+          ".validate": "newData.isString() && (newData.val() === 'Menunggu Verifikasi' || (auth.token.admin === true && (newData.val() === 'Diverifikasi' || newData.val() === 'Sedang Ditangani' || newData.val() === 'Selesai')))"
+        },
+        "adminNote": {
+          ".validate": "newData.isString() && newData.val().length <= 500 && auth != null && auth.token.admin === true"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() : newData.val() === now)"
+        },
+        "uid": {
+          ".validate": "newData.isString() && (data.exists() ? newData.val() === data.val() : newData.val() === auth.uid)"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    },
+    "publicStatus": {
+      "$id": {
+        ".read": true,
+        ".write": "auth != null && ((!data.exists() && newData.exists()) || auth.token.admin === true)",
+        ".validate": "newData.hasChildren(['category','status','createdAt'])",
+        "category": {
+          ".validate": "newData.val() === 'Sampah menumpuk' || newData.val() === 'Selokan tersumbat' || newData.val() === 'Pencemaran air' || newData.val() === 'Pencemaran udara' || newData.val() === 'Kerusakan ruang hijau'"
+        },
+        "status": {
+          ".validate": "newData.isString() && (newData.val() === 'Menunggu Verifikasi' || (auth.token.admin === true && (newData.val() === 'Diverifikasi' || newData.val() === 'Sedang Ditangani' || newData.val() === 'Selesai')))"
+        },
+        "note": {
+          ".validate": "newData.isString() && newData.val().length <= 500 && auth != null && auth.token.admin === true"
+        },
+        "createdAt": {
+          ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() : newData.val() === now)"
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}
